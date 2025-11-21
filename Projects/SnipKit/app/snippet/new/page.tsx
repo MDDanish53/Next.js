@@ -1,25 +1,13 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { createSnippet } from "@/utils/features";
+import { useActionState } from "react";
 
 const New = () => {
-  const createSnippet = async (formData: FormData) => {
-    "use server"; // use server directive
-    const title = formData.get("title") as string;
-    const code = formData.get("code") as string;
-
-    const snippet = await prisma.snippet.create({
-      data: {
-        title,
-        code,
-      },
-    });
-    console.log("snippet created", snippet)
-    redirect("/") // works only at server side
-  };
+const [serverResponse, createSnippetHandler] = useActionState(createSnippet, {message: ""})
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-900 to-gray-800 p-6">
@@ -34,7 +22,8 @@ const New = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <form action={createSnippet} className="space-y-6">
+          <h2 className="text-red-600 font-semibold mb-4 text-center">{serverResponse.message}</h2>
+          <form action={createSnippetHandler} className="space-y-6">
             <div className="space-y-2">
               <Label
                 htmlFor="title"
