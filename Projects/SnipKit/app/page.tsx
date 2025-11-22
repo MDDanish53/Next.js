@@ -3,6 +3,11 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Snippet } from "@/types";
 
+// Note - Try to keep the route static and handle its caching
+// Ways to make a route dynamic from static
+// export const dynamic = "force-dynamic" // disabling the caching of this route by making it dynamic from static
+// export const revalidate = 0; // disabling the caching by setting refresh time of page as 0 (the page will reload with the new info immediately)
+
 export default async function Home() {
   const snippets: Snippet[] = await prisma.snippet.findMany();
   return (
