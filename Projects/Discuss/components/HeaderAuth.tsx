@@ -4,15 +4,15 @@ import { useSession } from "next-auth/react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
-import { signOutHandler } from "@/app/actions/signOut";
+import { signOutHandler } from "@/actions/signOut";
 import { Button } from "./ui/button";
 import { LogOut } from "lucide-react";
-import { signInHandler } from "@/app/actions/signIn";
+import { signInHandler } from "@/actions/signIn";
 
 const HeaderAuth = () => {
   const session = useSession();
 
-  if(!session.data?.user) return null;
+  if(session.status === "loading") return null;
 
   let authContent: React.ReactNode;
   if(session.data?.user) {
