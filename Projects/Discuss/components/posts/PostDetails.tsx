@@ -6,6 +6,7 @@ type PostDetailsProps = {
 }
 
 const PostDetails: React.FC<PostDetailsProps> = async ({postId}) => {
+  await new Promise((res) => setTimeout(res, 3000)) // using Suspence for time consuming data fetching
   const post = await prisma.post.findFirst({
     where: {
       id: postId

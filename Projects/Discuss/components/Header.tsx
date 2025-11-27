@@ -1,28 +1,46 @@
 import Link from "next/link";
 import HeaderAuth from "./HeaderAuth";
 import { Input } from "./ui/input";
+import Search from "./Search";
+import { Suspense } from "react";
 
 const Header = async () => {
   return (
-    <div className="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-white via-gray-50 to-white backdrop-blur-sm border-b border-gray-100 shadow-lg">
-      <div>
-        <Link href={"/"}>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Discuss
-          </h1>
-        </Link>
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20">
+          <div className="flex-shrink-0">
+            <Link href={"/"} className="block">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent hover:scale-105 transition-transform">
+                Discuss
+              </h1>
+            </Link>
+          </div>
+          
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Suspense fallback={
+                <div className="w-full h-10 bg-gray-100 rounded-2xl animate-pulse"></div>
+              }>
+                <Search />
+              </Suspense>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 sm:gap-4">
+            <HeaderAuth />
+          </div>
+        </div>
+        
+        <div className="md:hidden pb-4">
+          <Suspense fallback={
+            <div className="w-full h-10 bg-gray-100 rounded-2xl animate-pulse"></div>
+          }>
+            <Search />
+          </Suspense>
+        </div>
       </div>
-      <div className="flex-1 max-w-lg mx-12">
-        <Input
-          type="text"
-          placeholder="Search discussions..."
-          className="w-full rounded-md border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"
-        />
-      </div>
-      <div className="flex items-center gap-4">
-        <HeaderAuth />
-      </div>
-    </div>
+    </header>
   );
 };
 
