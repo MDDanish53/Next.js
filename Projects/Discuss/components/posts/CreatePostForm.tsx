@@ -21,7 +21,7 @@ type CreatePostFormProps = {
 }
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({slug}) => {
-  const [formData, action] = useActionState(createPost.bind(slug), {errors: {}})
+  const [formState, action] = useActionState(createPost.bind(null, slug), {errors: {}})
   return (
     <Dialog>
         <DialogTrigger asChild>
@@ -39,14 +39,37 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({slug}) => {
           <div className="grid gap-6 py-4">
             <div className="grid gap-2">
               <Label htmlFor="title" className="text-sm font-semibold text-gray-700">Title</Label>
-              <Input id="title" name="title" className="rounded-lg border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all"/>
+              <Input id="title" name="title" className={`rounded-lg transition-all ${formState.errors.title ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-blue-400 focus:ring-blue-100'} focus:ring-2`}/>
+              {formState.errors.title && (
+                <div className="animate-in slide-in-from-top-2 duration-300">
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 flex items-center gap-2">
+                    <span className="text-red-500">⚠️</span>
+                    {formState.errors.title}
+                  </p>
+                </div>
+              )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="content" className="text-sm font-semibold text-gray-700">Content</Label>
-              <Textarea id="content" name="content" className="rounded-lg border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all min-h-[100px] resize-none" />
+              <Textarea id="content" name="content" className={`rounded-lg transition-all min-h-[100px] resize-none ${formState.errors.content ? 'border-red-400 focus:border-red-500 focus:ring-red-100' : 'border-gray-200 focus:border-blue-400 focus:ring-blue-100'} focus:ring-2`} />
+              {formState.errors.content && (
+                <div className="animate-in slide-in-from-top-2 duration-300">
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2 flex items-center gap-2">
+                    <span className="text-red-500">⚠️</span>
+                    {formState.errors.content}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-
+          {formState.errors.formError && (
+            <div className="animate-in slide-in-from-top-2 duration-300">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-3">
+                <span className="text-red-500 text-lg">🚫</span>
+                <p className="text-red-700 font-medium">{formState.errors.formError}</p>
+              </div>
+            </div>
+          )}
           <DialogFooter className="gap-3 pt-4">
             <DialogClose asChild>
               <Button variant="outline" className="rounded-full px-6 border-gray-300 hover:bg-gray-50 transition-all">Cancel</Button>
