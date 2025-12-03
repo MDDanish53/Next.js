@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import useStoreUser from "@/hooks/use-store-user";
 import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
@@ -7,12 +7,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BarLoader } from "react-spinners";
 import { Button } from "./ui/button";
+import { LayoutDashboard } from "lucide-react";
 
 const Header = () => {
   const path = usePathname();
-  const {isLoading} = useStoreUser();
+  const { isLoading } = useStoreUser();
 
-  if(path.includes("/editor")) {
+  if (path.includes("/editor")) {
     return null; // Hide header on editor page
   }
   return (
@@ -29,31 +30,58 @@ const Header = () => {
         </Link>
         {path === "/" && (
           <div className="hidden md:flex space-x-6">
-          <Link href="#features" className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer">Features</Link>
-          <Link href="#features" className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer">Pricing</Link>
-          <Link href="#features" className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer">Contact</Link>
-        </div>
-      )}
-      <div className="flex items-center gap-3 ml-10 md:ml-20">
-        <Unauthenticated>
-              <SignInButton>
-                <Button variant="glass" className="hidden sm:flex">Sign In</Button>
-              </SignInButton>
-              <SignUpButton>
-                <Button variant="primary">Get Started</Button>
-              </SignUpButton>
-            </Unauthenticated>
-            <Authenticated>
-              <UserButton appearance={{
+            <Link
+              href="#features"
+              className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer"
+            >
+              Features
+            </Link>
+            <Link
+              href="#features"
+              className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer"
+            >
+              Pricing
+            </Link>
+            <Link
+              href="#features"
+              className="text-white font-medium transition-all duration-300 hover:text-cyan-400 cursor-pointer"
+            >
+              Contact
+            </Link>
+          </div>
+        )}
+        <div className="flex items-center gap-3 ml-10 md:ml-20">
+          <Unauthenticated>
+            <SignInButton>
+              <Button variant="glass" className="hidden sm:flex">
+                Sign In
+              </Button>
+            </SignInButton>
+            <SignUpButton>
+              <Button variant="primary">Get Started</Button>
+            </SignUpButton>
+          </Unauthenticated>
+          <Authenticated>
+            <Link href="/dashboard">
+              <Button variant={"glass"}>
+                <LayoutDashboard className="h-4 w-4" />
+                <span className="hidden md:flex">Dashboard</span>
+              </Button>
+            </Link>
+            <UserButton
+              appearance={{
                 elements: {
-                  avatarBox: "w-8 h-8"
-                }
-              }} />
-            </Authenticated>
-      </div>
-      {isLoading && (
-        <div className="fixed bottom-0 left-0 w-full z-40 flex justify-center"><BarLoader width={"95%"} color="#06b6d4" /></div>
-      )}
+                  avatarBox: "w-8 h-8",
+                },
+              }}
+            />
+          </Authenticated>
+        </div>
+        {isLoading && (
+          <div className="fixed bottom-0 left-0 w-full z-40 flex justify-center">
+            <BarLoader width={"95%"} color="#06b6d4" />
+          </div>
+        )}
       </div>
     </header>
   );
