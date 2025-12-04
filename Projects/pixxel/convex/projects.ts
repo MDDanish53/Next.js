@@ -53,23 +53,23 @@ export const create = mutation({
   },
 });
 
-export const getUserProjects = query({
+export const getUserProjects: any = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
     if (!user) {
-      throw new Error("User not authenticated");
+      return [];
     }
     const projects = await ctx.db
       .query("projects")
-      .withIndex("by_user_updated", (q) => q.eq("userId", user._id))
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
       .order("desc")
       .collect();
 
     return projects;
   }
-})
+});
 
-export const deleteProject = () => mutation({
+export const deleteProject = mutation({
   args: {projectId: v.id("projects")},
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
@@ -89,4 +89,4 @@ export const deleteProject = () => mutation({
     });
     return {success: true}
   }
-})
+});
