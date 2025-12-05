@@ -1,16 +1,16 @@
-import { auth } from "@clerk/nextjs/dist/types/server"
+import { auth } from "@clerk/nextjs/server"
 import ImageKit from "imagekit"
 import { NextResponse } from "next/server";
 
 const imagekit = new ImageKit({
   publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: process.env.https://ik.imagekit.io/mddanish53
+  urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT
 })
 
 export async function POST(request) {
   try {
-    const {userId} = new auth();
+    const {userId} = await auth();
     if(!userId) {
       return NextResponse.json({error: "Unauthorized"}, {status: 401})
     }
