@@ -123,7 +123,7 @@ export const updateProject = mutation({
     activeTransformations: v.optional(v.string()),
     backgroundRemoved: v.optional(v.boolean()), 
   },
-  handler: async (ctx) => {
+  handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
 
     const project = await ctx.db.get(args.projectId);
@@ -139,23 +139,22 @@ export const updateProject = mutation({
     }
 
     if(args.canvasState !== undefined)
-      updateData.canvasState = args.canvasState
+      updateData.canvasState = args.canvasState;
     if(args.width !== undefined)
-      updateData.width = args.width
+      updateData.width = args.width;
     if(args.height !== undefined)
-      updateData.height = args.height
+      updateData.height = args.height;
     if(args.currentImageUrl !== undefined)
-      updateData.currentImageUrl = args.currentImageUrl
+      updateData.currentImageUrl = args.currentImageUrl;
     if(args.thumbnailUrl !== undefined)
-      updateData.thumbnailUrl = args.thumbnailUrl
+      updateData.thumbnailUrl = args.thumbnailUrl;
     if(args.activeTransformations !== undefined)
-      updateData.activeTransformations = args.activeTransformations
+      updateData.activeTransformations = args.activeTransformations;
     if(args.backgroundRemoved !== undefined)
-      updateData.backgroundRemoved = args.backgroundRemoved
+      updateData.backgroundRemoved = args.backgroundRemoved;
 
-    await ctx.db.patch(args.projectId, updateData)
+    await ctx.db.patch(args.projectId, updateData);
 
     return args.projectId;
-
   }
 })
