@@ -12,6 +12,7 @@ import ResizeControls from "./tools/Resize";
 import CropContent from "./tools/Crop";
 import Adjust from "./tools/Adjust";
 import BackgroundControls from "./tools/ai-background";
+import TextControls from "./tools/text";
 
 const TOOL_CONFIGS = {
   resize: {
@@ -86,6 +87,8 @@ function renderToolConfig(activeTool, project) {
       return <Adjust />
     case "background":
       return <BackgroundControls project={project} />
+    case "text":
+      return <TextControls />
     default:
       return <div className="text-white">Select a tool to get started</div>
   }

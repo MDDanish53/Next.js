@@ -216,6 +216,27 @@ const CanvasEditor = ({ project }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [canvasEditor, project])
 
+  useEffect(() => {
+    if(!canvasEditor || !onToolChange) return;
+
+    const handleSelection = (e) => {
+      const selectedObject = e.selected?.[0]; // Get first selected object
+
+      // If selected object is text, automatically switch to text tool
+      if(selectedObject && selectedObject.type === "i-text") {
+        onToolChange("text");
+      }
+    }
+
+    canvasEditor.on("selection:created", handleSelection); // New selection
+    canvasEditor.on("selection:updated", handleSelection); // Selection changed
+
+    return () => {
+      canvasEditor.off("selection:created", handleSelection);
+      canvasEditor.off("selection:updated", handleSelection);
+    }
+  }, [canvasEditor, onToolChange])
+
   return (
     <div
       ref={containerRef}
