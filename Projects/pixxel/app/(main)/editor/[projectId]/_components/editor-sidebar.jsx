@@ -1,3 +1,5 @@
+"use client";
+
 import { useCanvas } from "@/context/context";
 import {
   Crop,
@@ -14,6 +16,7 @@ import Adjust from "./tools/Adjust";
 import BackgroundControls from "./tools/ai-background";
 import TextControls from "./tools/text";
 import AIExtenderControls from "./tools/ai_extend";
+import AIEditor from "./tools/ai-edit";
 
 const TOOL_CONFIGS = {
   resize: {
@@ -92,6 +95,8 @@ function renderToolConfig(activeTool, project) {
       return <TextControls />
     case "ai_extender": 
       return <AIExtenderControls project={project} />
+    case "ai_edit":
+      return <AIEditor project={project} />
     default:
       return <div className="text-white">Select a tool to get started</div>
   }

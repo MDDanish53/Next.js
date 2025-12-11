@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useCanvas } from "@/context/context";

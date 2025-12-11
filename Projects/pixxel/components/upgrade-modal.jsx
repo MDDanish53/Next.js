@@ -1,3 +1,5 @@
+"use client";
+
 import { Crown, Terminal, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
