@@ -60,7 +60,7 @@ const FONT_FAMILIES = [
   "Inconsolata",
 ];
 
-const FONT_SIZES = { min: 8, max: 120, default: 48 };
+const FONT_SIZES = { min: 8, max: 200, default: 20 };
 
 const TextControls = () => {
   const { canvasEditor } = useCanvas();
@@ -68,7 +68,7 @@ const TextControls = () => {
   const [selectedText, setSelectedText] = useState(null); // Currently selected text object
   const [fontFamily, setFontFamily] = useState("Arial"); // Current font family
   const [fontSize, setFontSize] = useState(FONT_SIZES.default); // Current font size
-  const [textColor, setTextColor] = useState("#000000"); // Current text color
+  const [textColor, setTextColor] = useState("#ffffff"); // Current text color
   const [textAlign, setTextAlign] = useState("left"); // Current text alignment
   const [_, setChanged] = useState(0); // Force re-render trigger for button states
 
@@ -204,6 +204,8 @@ const TextControls = () => {
       fontSize,
       fill: textColor, // use current color setting
       textAlign, // use current alignment setting
+      scaleX: 2, // Make text 2x larger horizontally
+      scaleY: 2, // Make text 2x larger vertically
       editable: true, // Allow direct text editing on canvas
       selectable: true, // Allow object selection and transformation
     });

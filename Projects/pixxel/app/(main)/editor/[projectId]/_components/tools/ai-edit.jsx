@@ -146,7 +146,7 @@ const AIEditor = ({ project }) => {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-2">
       {hasActiveTransformations && (
         <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
           <div className="flex items-start gap-3">
@@ -203,7 +203,7 @@ const AIEditor = ({ project }) => {
         </div>
       </div>
 
-      <Button onClick={applyRetouch} className="w-full mt-2" variant="primary">
+      <Button onClick={applyRetouch} className="w-full" variant="primary">
           <Wand2 className="h-4 w-4 mr-2" />
           Apply {selectedPresetData?.label}
       </Button>

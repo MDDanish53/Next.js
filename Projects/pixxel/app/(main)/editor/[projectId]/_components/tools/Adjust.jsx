@@ -105,6 +105,12 @@ const Adjust = () => {
     setIsApplying(true);
 
     try {
+      // Store original bounds
+      const originalLeft = imageObject.left;
+      const originalTop = imageObject.top;
+      const originalWidth = imageObject.width;
+      const originalHeight = imageObject.height;
+
       const filtersToApply = [];
 
       FILTER_CONFIGS.forEach((config) => {
@@ -124,6 +130,7 @@ const Adjust = () => {
 
       await new Promise((resolve) => {
         imageObject.applyFilters();
+        imageObject.setCoords();
         canvasEditor.requestRenderAll();
         setTimeout(resolve, 50)
       })

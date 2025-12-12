@@ -41,7 +41,7 @@ export const store = mutation({
   },
 });
 
-export const getCurrentUser = internalQuery({
+export const getCurrentUser = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) {
