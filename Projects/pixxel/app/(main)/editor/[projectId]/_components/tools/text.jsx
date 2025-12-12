@@ -65,12 +65,46 @@ const FONT_SIZES = { min: 8, max: 200, default: 20 };
 const TextControls = () => {
   const { canvasEditor } = useCanvas();
 
-  const [selectedText, setSelectedText] = useState(null); // Currently selected text object
-  const [fontFamily, setFontFamily] = useState("Arial"); // Current font family
-  const [fontSize, setFontSize] = useState(FONT_SIZES.default); // Current font size
-  const [textColor, setTextColor] = useState("#ffffff"); // Current text color
-  const [textAlign, setTextAlign] = useState("left"); // Current text alignment
-  const [_, setChanged] = useState(0); // Force re-render trigger for button states
+  const [selectedText, setSelectedText] = useState(null);
+  const [fontFamily, setFontFamily] = useState("Arial");
+  const [fontSize, setFontSize] = useState(FONT_SIZES.default);
+  const [textColor, setTextColor] = useState("#ffffff");
+  const [textAlign, setTextAlign] = useState("left");
+  const [_, setChanged] = useState(0);
+
+  useEffect(() => {
+    if (!canvasEditor) return;
+
+    const updateSelectedText = () => {
+      const activeObject = canvasEditor.getActiveObject();
+
+      if (activeObject && activeObject.type === "i-text") {
+        setSelectedText(activeObject);
+        setFontFamily(activeObject.fontFamily || "Arial");
+        setFontSize(activeObject.fontSize || FONT_SIZES.default);
+        setTextColor(activeObject.fill || "#000000");
+        setTextAlign(activeObject.textAlign || "left");
+      } else {
+        setSelectedText(null);
+      }
+    };
+
+    updateSelectedText();
+
+    const handleSelectionCreated = () => updateSelectedText();
+    const handleSelectionUpdated = () => updateSelectedText();
+    const handleSelectionCleared = () => setSelectedText(null);
+
+    canvasEditor.on("selection:created", handleSelectionCreated);
+    canvasEditor.on("selection:updated", handleSelectionUpdated);
+    canvasEditor.on("selection:cleared", handleSelectionCleared);
+
+    return () => {
+      canvasEditor.off("selection:created", handleSelectionCreated);
+      canvasEditor.off("selection:updated", handleSelectionUpdated);
+      canvasEditor.off("selection:cleared", handleSelectionCleared);
+    };
+  }, [canvasEditor]);
 
   if (!canvasEditor) {
     return (
@@ -80,40 +114,20 @@ const TextControls = () => {
     );
   }
 
-  const updateSelectedText = () => {
-    if (!canvasEditor) return;
-
-    const activeObject = canvasEditor.getActiveObject();
-
-    if (activeObject && activeObject.type === "i-text") {
-      setSelectedText(activeObject);
-
-      // Sync UI controls with the selected text's current properties
-      setFontFamily(activeObject.fontFamily || "Arial");
-      setFontSize(activeObject.fontSize || FONT_SIZES.default);
-      setTextColor(activeObject.fill || "#000000");
-      setTextAlign(activeObject.textAlign || "left");
-    } else {
-      // No text selected, clear the selectedText state
-      setSelectedText(null);
-    }
-  };
-
   const applyFontFamily = (family) => {
     if (!selectedText) return;
-    setFontFamily(family); // Update local state
-    selectedText.set("fontFamily", family); // Update Fabric.js object property
-    canvasEditor.requestRenderAll(); // Re-render to show changes
+    setFontFamily(family);
+    selectedText.set("fontFamily", family);
+    canvasEditor.requestRenderAll();
   };
 
   const applyFontSize = (size) => {
     if (!selectedText) return;
 
-    // Handle both direct values and array values from Slider component
     const newSize = Array.isArray(size) ? size[0] : size;
-    setFontSize(newSize); // Update local state
+    setFontSize(newSize);
 
-    selectedText.set("fontSize", newSize); // Update Fabric.js object
+    selectedText.set("fontSize", newSize);
     canvasEditor.requestRenderAll();
   };
 
@@ -129,7 +143,7 @@ const TextControls = () => {
     if (!selectedText) return;
 
     setTextColor(color);
-    selectedText.set("fill", color); // In Fabric.js, "fill" property controls text color
+    selectedText.set("fill", color);
     canvasEditor.requestRenderAll();
   };
 
@@ -138,13 +152,11 @@ const TextControls = () => {
 
     switch (format) {
       case "bold": {
-        // Toggle between normal and bold font weight
         const current = selectedText.fontWeight || "normal";
         selectedText.set("fontWeight", current === "bold" ? "normal" : "bold");
         break;
       }
       case "italic": {
-        // Toggle between normal and italic font style
         const current = selectedText.fontStyle || "normal";
         selectedText.set(
           "fontStyle",
@@ -153,7 +165,6 @@ const TextControls = () => {
         break;
       }
       case "underline": {
-        // Toggle underline on/off
         const current = selectedText.underline || false;
         selectedText.set("underline", !current);
         break;
@@ -161,62 +172,42 @@ const TextControls = () => {
     }
 
     canvasEditor.requestRenderAll();
-    setChanged((c) => c + 1); // Force component re-render to update button active states
+    setChanged((c) => c + 1);
   };
 
   const deleteSelectedText = () => {
     if(!canvasEditor || !selectedText) return;
 
-    canvasEditor.remove(selectedText); // Remove from canvas
-    canvasEditor.requestRenderAll(); // Re-render canvas
-    setSelectedText(null); // Clear selection state
+    canvasEditor.remove(selectedText);
+    canvasEditor.requestRenderAll();
+    setSelectedText(null);
   }
-
-  useEffect(() => {
-    if (!canvasEditor) return;
-
-    updateSelectedText();
-
-    const handleSelectionCreated = () => updateSelectedText(); // When user selects an object
-    const handleSelectionUpdated = () => updateSelectedText(); // When selection changes to different object
-    const handleSelectionCleared = () => setSelectedText(null); // When user deselects everything
-
-    canvasEditor.on("selection:created", handleSelectionCreated);
-    canvasEditor.on("selection:updated", handleSelectionUpdated);
-    canvasEditor.on("selection:cleared", handleSelectionCleared);
-
-    return () => {
-      canvasEditor.off("selection:created", handleSelectionCreated);
-      canvasEditor.off("selection:updated", handleSelectionUpdated);
-      canvasEditor.off("selection:cleared", handleSelectionCleared);
-    };
-  }, [canvasEditor]);
 
   const addText = () => {
     if (!canvasEditor) return;
 
     const text = new IText("Edit this text", {
-      left: canvasEditor.width / 2, // Center horizontally
-      top: canvasEditor.height / 2, // Center vertically
-      originX: "center", // use center as horizontal origin point
-      originY: "center", // use center as vertical origin point
-      fontFamily, // use current font family setting
+      left: canvasEditor.width / 2,
+      top: canvasEditor.height / 2,
+      originX: "center",
+      originY: "center",
+      fontFamily,
       fontSize,
-      fill: textColor, // use current color setting
-      textAlign, // use current alignment setting
-      scaleX: 2, // Make text 2x larger horizontally
-      scaleY: 2, // Make text 2x larger vertically
-      editable: true, // Allow direct text editing on canvas
-      selectable: true, // Allow object selection and transformation
+      fill: textColor,
+      textAlign,
+      scaleX: 2,
+      scaleY: 2,
+      editable: true,
+      selectable: true,
     });
 
     canvasEditor.add(text);
     canvasEditor.setActiveObject(text);
-    canvasEditor.requestRenderAll(); // Trigger canvas re-render
+    canvasEditor.requestRenderAll();
 
     setTimeout(() => {
-      text.enterEditing(); // switch to text editing mode
-      text.selectAll(); // select all text for immediate editing
+      text.enterEditing();
+      text.selectAll();
     }, 100);
   };
 
@@ -256,15 +247,14 @@ const TextControls = () => {
             </select>
           </div>
 
-          {/* Font Size Slider */}
           <div className="space-y-2 mb-4">
             <div className="flex justify-between items-center">
               <label className="text-xs text-white/70">Font Size</label>
               <span className="text-xs text-white/70">{fontSize}px</span>
             </div>
             <Slider
-              value={[fontSize]} // Slider expects array format
-              onValueChange={applyFontSize} // Calls with array format
+              value={[fontSize]}
+              onValueChange={applyFontSize}
               min={FONT_SIZES.min}
               max={FONT_SIZES.max}
               step={1}
@@ -297,14 +287,12 @@ const TextControls = () => {
           <div className="space-y-2 mb-4">
             <label className="text-xs text-white/70">Text Color</label>
             <div className="flex gap-2">
-              {/* Native Color Picker */}
               <input
                 type="color"
                 value={textColor}
                 onChange={(e) => applyTextColor(e.target.value)}
                 className="w-10 h-10 rounded border border-white/20 bg-transparent cursor-pointer"
               />
-              {/* Text input for manual hex entry */}
               <Input
                 value={textColor}
                 onChange={(e) => applyTextColor(e.target.value)}

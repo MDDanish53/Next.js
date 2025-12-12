@@ -339,7 +339,7 @@ const BackgroundControls = ({ project }) => {
             <div className="text-center py-8">
               <ImageIcon className="h-12 w-12 text-white/30 mx-auto mb-3" />
               <p className="text-white/70 text-sm">
-                No images found for "{searchQuery}"
+                No images found for &quot;{searchQuery}&quot;
               </p>
               <p className="text-white/50 text-xs">
                 Try a different search term

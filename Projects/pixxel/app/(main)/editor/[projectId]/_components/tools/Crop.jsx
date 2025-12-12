@@ -49,25 +49,6 @@ const CropContent = () => {
     return objects.find((obj) => obj.type === "image") || null;
   };
 
-  useEffect(() => {
-    if (activeTool === "crop" && isCropMode) {
-      const image = getActiveImage();
-      if (image) {
-        initializeCropMode(image);
-      }
-    } else if (activeTool !== "crop" && isCropMode) {
-      exitCropMode();
-    }
-  }, [activeTool, canvasEditor]);
-
-  useEffect(() => {
-    return () => {
-      if (isCropMode) {
-        exitCropMode();
-      }
-    };
-  }, []);
-
   const exitCropMode = () => {
     if (!isCropMode) return;
 
@@ -190,6 +171,25 @@ const CropContent = () => {
     createCropRectangle(image);
     canvasEditor.requestRenderAll();
   };
+
+  useEffect(() => {
+    if (activeTool === "crop" && !isCropMode) {
+      const image = getActiveImage();
+      if (image) {
+        setTimeout(() => initializeCropMode(image), 0);
+      }
+    } else if (activeTool !== "crop" && isCropMode) {
+      setTimeout(() => exitCropMode(), 0);
+    }
+  }, [activeTool, canvasEditor]);
+
+  useEffect(() => {
+    return () => {
+      if (isCropMode) {
+        exitCropMode();
+      }
+    };
+  }, [isCropMode]);
 
   const activeImage = getActiveImage();
 
@@ -343,13 +343,13 @@ const CropContent = () => {
         <p className="text-xs text-white/70">
           <strong>How to crop:</strong>
           <br />
-          1. Click "Start Cropping"
+          1. Click &quot;Start Cropping&quot;
           <br />
           2. Drag the blue rectangle to select crop area
           <br />
           3. Choose aspect ratio (optional)
           <br />
-          4. Click "Apply Crop" to finalize
+          4. Click &quot;Apply Crop&quot; to finalize
         </p>
       </div>
     </div>
